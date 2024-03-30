@@ -1,9 +1,9 @@
-const nftModal = require("../modal/nft.modal");
+const nftModel = require("../model/nft.model");
 
 exports.approveNft = async (req, res) => {
   const approved = req.body.approved;
   const { id } = req.params;
-  nftModal
+  nftModel
     .findByIdAndUpdate(
       { id },
       {
@@ -25,4 +25,33 @@ exports.approveNft = async (req, res) => {
         nft: data,
       });
     });
+};
+
+exports.getnftData = async (req, res) => {
+  await NftModal.find({}).exec((err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Error occured",
+      });
+    }
+    console.log(data);
+    res.status(200).json(data);
+    return;
+    // res.status(200);
+  });
+};
+
+exports.deleteOneNftData = async (req, res) => {
+  const { id } = req.params;
+  NftModal.findOneAndDelete({ id }).exec((err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Error occured",
+      });
+    }
+    return res.status(200).json({
+      message: "NFT data! deleted successfully",
+      success: true,
+    });
+  });
 };
