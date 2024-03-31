@@ -7,6 +7,8 @@ import PayementAsset from "../asset/pay.jpg";
 import { acoinToInr, payWithStripe } from "../api/api";
 import "./../pages/payment/Payment.css";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const StripeCheckout = (props) => {
   const [succeeded, setSucceeded] = useState(false);
@@ -15,7 +17,7 @@ const StripeCheckout = (props) => {
   const [disabled, setDisabled] = useState(true);
   const [clientSecret, setClientSecret] = useState("");
   const [payable, setPayable] = useState(0);
-
+  const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
   const { user } = useSelector((state) => ({ ...state }));
@@ -55,6 +57,8 @@ const StripeCheckout = (props) => {
       setError(null);
       setProcessing(false);
       setSucceeded(true);
+      toast.success("Coin Purchased");
+      navigate("/user/wallet");
     }
   };
 

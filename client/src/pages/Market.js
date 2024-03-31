@@ -11,15 +11,19 @@ export default function Market() {
   const [ownershipValue, setOwnershipValue] = React.useState([]);
   React.useEffect(() => {
     getApprovedNFTS().then(async (res) => {
-      let token = [];
+      let tokenIds = [];
+      let ownerAddresses = [];
+
       console.log(res.data.nft);
       setNfts(res.data.nft);
       res.data.nft.forEach((element) => {
-        token.push(element.tokenId);
+        tokenIds.push(element.tokenId);
+        ownerAddresses.push(element.user.walletAddress);
       });
       await axios
         .post("http://localhost:8000/nft/divisibilities", {
-          tokenIds: token,
+          tokenIds: tokenIds,
+          ownerAddresses: ownerAddresses
         })
         .then((res) => {
           console.log("Success");
@@ -98,6 +102,7 @@ export default function Market() {
                                 style={{
                                   width: "100px",
                                   height: "100px",
+                                  borderRadius: "15%",
                                 }}
                               />
                             </Link>

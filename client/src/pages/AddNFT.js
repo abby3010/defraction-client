@@ -3,12 +3,14 @@ import { addNFT } from '../api/api';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function AddNFT() {
     const [data, setData] = React.useState({});
     const [image, setImage] = React.useState(null);
     const [displayImage, setDisplayImage] = React.useState(null);
     const { user } = useSelector((state) => ({ ...state }));
+    const navigate = useNavigate();
 
     const handleFileUpload = (event) => {
         console.log(event.target.files[0]);
@@ -29,7 +31,8 @@ export default function AddNFT() {
             await addNFT(data)
                 .then((res) => {
                     toast.success("NFT added successfully");
-                    window.location.reload();
+                    // window.location.reload();
+                    navigate("/my-nfts")
                 })
         console.log(result);
     }

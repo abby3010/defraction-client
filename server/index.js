@@ -10,6 +10,7 @@ const bodyParser = require("body-parser");
 const connection = require("./connection");
 const { web3, web3config } = require("./web3");
 const Web3 = require("web3");
+const Moralis = require("moralis").default;
 
 const main = async () => {
   // Mongoose Connection
@@ -22,6 +23,9 @@ const main = async () => {
     web3config(con).then(async() => {
       try {
         console.log(await (web3()).eth.getBlockNumber()); 
+        Moralis.start({
+          apiKey: process.env.MORALIS_KEY
+        }).then(async(result)=>{console.log("Web3 Connected")})
       } catch(e) {
         console.log(e)
       }
@@ -57,6 +61,8 @@ const main = async () => {
   const authRoute = require("./routes/auth.routes");
   const adminRoute = require("./routes/admin.routes");
   const nftRoutes = require("./routes/nft.routes");
+  const tradingRoutes = require("./routes/stockMarket.routes")
+  const stripeRoutes = require("./routes/stripe.routes")
   // const ACoinRoutes = require('./routes/ACoinRoutes');
   app.use(require("./routes/ACoinRoutes"));
   app.use(require("./routes/DivisibleNFTRoutes"));
@@ -66,7 +72,11 @@ const main = async () => {
   // Route Middlewares
   app.use("/api/auth", authRoute);
 
+  app.use("/api/trade", tradingRoutes);
+
   app.use("/api/nft", nftRoutes);
+
+  app.use("/api/stripe", stripeRoutes)
 
   // Serve static assets if in production
   app.use("/", function (req, res) {

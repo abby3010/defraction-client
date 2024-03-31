@@ -39,7 +39,8 @@ exports.web3config = async (con) => {
 
 exports.web3 = () => {
     return new Web3(
-    new Web3.providers.HttpProvider(_web3.web3_link));
+    new Web3.providers.HttpProvider(`https://polygon-mumbai.infura.io/v3/aacd62799a1a4b919aa46ce261c790f6`));
+    // new Web3.providers.HttpProvider(_web3.web3_link));
 }
 
 // exports.web3 = async () => {

@@ -18,11 +18,13 @@ export default function UserWallet() {
   const [balance, setBalance] = React.useState(0);
   const [acoinBalance, setAcoinBalance] = React.useState(0);
   const [transactions, setTransactions] = React.useState([]);
+  const [trades, setTrades] = React.useState([]);
 
   React.useEffect(() => {
     getBalance();
     getAcoinBalanceData();
     fetchUserTransactions();
+    fetchUserTrades();
     console.log(user.user);
   }, []);
 
@@ -71,6 +73,17 @@ export default function UserWallet() {
       .then((res) => {
         console.log(res.data.transaction);
         setTransactions(res.data.transaction);
+      });
+  };
+
+  const fetchUserTrades = async () => {
+    await axios
+      .post("http://localhost:8000/acoin/user-transactions", {
+        email: user.user.email,
+      })
+      .then((res) => {
+        console.log(res.data.trades);
+        setTrades(res.data.trades);
       });
   };
 
@@ -198,69 +211,6 @@ export default function UserWallet() {
   // Burn ACOin
   const [data, setData] = React.useState("");
 
-  // const checkTransactionconfirmation = (txhash) => {
-  //   let checkTransactionLoop = () => {
-  //     return window.ethereum
-  //       .request({ method: "eth_getTransactionReceipt", params: [txhash] })
-  //       .then(async (r) => {
-  //         if (r != null) {
-  //           var myHeaders = new Headers();
-  //           myHeaders.append("Content-Type", "application/json");
-
-  //           var raw = JSON.stringify({
-  //             caller: user.user.walletAddress,
-  //           });
-
-  //           var requestOptions = {
-  //             method: "POST",
-  //             headers: myHeaders,
-  //             body: raw,
-  //             redirect: "follow",
-  //           };
-
-  //           let boolTransaction = await axios.post(
-  //             "http://localhost:8000/acoin/buyEvent",
-  //             requestOptions
-  //           )
-  //             .then((result) => {
-  //               const parsedResult = result.data;
-  //               console.log(parsedResult);
-
-  //               console.log(
-  //                 "The account is " +
-  //                   parsedResult["returnValues"]["_account"].toString()
-  //               );
-  //               console.log(
-  //                 "The caller is " +
-  //                   parsedResult["returnValues"]["_caller"].toString()
-  //               );
-  //               console.log(
-  //                 "The coins' value is " +
-  //                   parsedResult["returnValues"]["_numACoins"].toString()
-  //               );
-  //               console.log(
-  //                 "The message is " +
-  //                   parsedResult["returnValues"]["_message"].toString()
-  //               );
-  //               // setcoin("");
-  //               toast.success("Coin Purchased");
-  //               navigate("/user/wallet");
-  //               return true;
-  //             })
-  //             .catch((error) => {
-  //               console.log("error", error);
-  //               return false;
-  //             });
-
-  //           if (boolTransaction) {
-  //             return "Transaction Confirmed";
-  //           } else return "Transaction Failed";
-  //         } else return checkTransactionLoop();
-  //       });
-  //   };
-
-  //   return checkTransactionLoop();
-  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -285,7 +235,6 @@ export default function UserWallet() {
       <div className="settings mtb15">
         <div className="container-fluid">
           <div className="row">
-            {/* {transactions} */}
             <div className="col-md-12 col-lg-12">
               <div className="tab-content" id="v-pills-tabContent">
                 <div
@@ -353,40 +302,33 @@ export default function UserWallet() {
                           >
                             <div className="card">
                               <div className="card-body">
-                                <h5 className="card-title">Balances</h5>
-                                <ul>
-                                  <li className="d-flex justify-content-between align-items-center">
-                                    <div className="d-flex align-items-center">
-                                      <i className="icon ion-md-cash"></i>
-                                      <h2>Total Equity</h2>
-                                    </div>
-                                    <div>
-                                      <h3>7.342 BNB</h3>
-                                    </div>
-                                  </li>
-                                  <li className="d-flex justify-content-between align-items-center">
-                                    <div className="d-flex align-items-center">
-                                      <i className="icon ion-md-checkmark"></i>
-                                      <h2>Available Margin</h2>
-                                    </div>
-                                    <div>
-                                      <h3>0.332 BNB</h3>
-                                    </div>
-                                  </li>
-                                </ul>
-                                <Link
-                                  to="/get-coin"
-                                  className="btn btn-success"
-                                >
-                                  Deposit
-                                </Link>{" "}
-                                &nbsp;&nbsp;&nbsp;
-                                <Link
-                                  to="/burn-coin"
-                                  className="btn btn-danger"
-                                >
-                                  Withdraw
-                                </Link>
+                                <h5 className="card-title">Recent Trades</h5>
+                                <table className="table">
+                                    <thead>
+                                      <tr>
+                                        <th>No.</th>
+                                        <th>For NFT</th>
+                                        <th>Trade Type</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {trades &&
+                                        trades.slice(0).reverse().map((data, index) => (
+                                          <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{data.exchangeData.ticker_symbol} </td>
+                                            <td>{data.exchangeData.order_type}</td>
+                                            <td>
+                                              {data.exchangeData.quantity + "\tshares"}
+                                            </td>
+                                            <td>{data.exchangeData.price + "\t Acoins"}</td>
+                                          </tr>
+                                        ))}
+                                    </tbody>
+                                  </table>
+                                
                               </div>
                             </div>
                             <div className="card">

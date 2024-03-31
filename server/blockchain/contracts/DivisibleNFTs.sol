@@ -9,29 +9,44 @@ contract DivisibleNFTs {
     string public constant symbol = "ACNFT"; // Ticker for ACoin
     uint8 public constant decimals = 18; // Precision of use for the ACoin
     mapping(address => uint256) acoinBalances; // ACoin balances of the Traders
+    mapping(address => mapping(address => mapping(string => mapping(uint => uint)))) confirmedPrice;
     uint256 acoinTotalSupply; // Total supply of the ACoin
-    address owner;
+    address payable owner;
 
     // ------------------------------ All Events ------------------------------
-	event unitsOwnedOfATokenEvent(uint256  _balance, string _message);
+	event unitsOwnedOfATokenEvent(uint256  _balance, address payable _caller, string _message);
 
-	event divisibilityEvent(uint256 _divisibility, string _message);
+	event divisibilityEvent(uint256 _divisibility, address payable _caller, string _message);
 
-	event mintEvent(address _owner, string _tokenId, uint _noOfShares, uint _tokenTotalSupply, string _message);
+	event mintEvent(address _owner, string _tokenId, uint _noOfShares, uint _tokenTotalSupply, address payable _caller, string _message);
 
 	event transferTokenEvent(address _from, address _to, string _tokenId, uint _units, string _message);
 
-	event totalSupplyEvent(uint256 _totalSupply, string _message);
+	event transferNftShareEvent(address _from, address _to, string _tokenId, uint _units, uint _amount, string _message);
 
-	event buyACoinEvent(address _account, uint _numACoins);
+	event totalSupplyEvent(uint256 _totalSupply, address payable _caller, string _message);
 
-	event burnACoinEvent(address _account, uint _numACoins);
+	event buyACoinEvent(address _account, uint _numACoins, address payable _caller, string _message);
 
-    event transferACoinEvent(address _from, address _to, uint _numACoins);
+	event buyACoinINREvent(address _account, uint _numACoins, address payable _caller, string _message);
 
-	event getAcoinTotalSupplyEvent( uint _acoinTotalSupply, string _message);
+	event burnACoinEvent(address _account, uint _numACoins, address payable _caller, string _message);
+	
+    event burnACoinINREvent(address _account, uint _numACoins, address payable _caller, string _message);
 
-	event acoinBalanceOfEvent(uint _acoinBalance, string _message);
+    event transferACoinEvent(address _from, address _to, uint _numACoins,  address payable _caller, string _message);
+
+	event getAcoinTotalSupplyEvent( uint _acoinTotalSupply, address payable _caller, string _message);
+
+	event acoinBalanceOfEvent(uint _acoinBalance, address payable _caller, string _message);
+
+    event removeShareEvent(address _owner, string _tokenId, uint256 _units,  string _message);
+
+    event addShareEvent(address _owner, string _tokenId, uint256 _units,  string _message);
+
+    event removeOwnerHoldingsEvent(address _owner, string _tokenId, uint256 _units,  string _message);
+
+    event addOwnerHoldingsEvent(address _owner, string _tokenId, uint256 _units,  string _message);
 
     // ----------------------- Variables for Non Fungible Token Management------------------------
 
@@ -58,7 +73,7 @@ contract DivisibleNFTs {
     constructor() payable {
         acoinTotalSupply = 0;
 		tokenTotalSupply = 0;
-        owner = msg.sender;
+        owner = payable(msg.sender);
     }
 
     // ====================== Everything related to ACoin =========================
@@ -76,15 +91,15 @@ contract DivisibleNFTs {
 
     // ------------------------------ View functions ------------------------------
 
-    /// @dev The total ACoins iin circulation at the moment of invocation of this function
-    function getAcoinTotalSupply() public returns (uint256) {
-		emit getAcoinTotalSupplyEvent(acoinTotalSupply, "getAcoinTotalSupply");
+    /// @dev The total ACoins in circulation at the moment of invocation of this function
+    function getAcoinTotalSupply() public view returns (uint256) {
+		// emit getAcoinTotalSupplyEvent(acoinTotalSupply, _caller, "getAcoinTotalSupply");
         return acoinTotalSupply;
     }
 
     /// @dev The ACoin balance of that address
-    function acoinBalanceOf(address acoinOwner) public returns (uint256) {
-		emit acoinBalanceOfEvent( acoinBalances[acoinOwner], "acoinBalanceOf");
+    function acoinBalanceOf(address acoinOwner) public view returns (uint256) {
+		// emit acoinBalanceOfEvent( acoinBalances[acoinOwner], _caller, "acoinBalanceOf");
         return acoinBalances[acoinOwner];
     }
 
@@ -93,40 +108,66 @@ contract DivisibleNFTs {
     // ------------------------------ Core public functions ------------------------------
     
 	/// @dev Buying ACoin, transferring ETH to owner
-    function buyACoin(address account, uint numACoins )
+    function buyACoin(address account, uint numACoins, address payable _caller)
 		payable
         public 
-        onlyOwner
     {
         acoinBalances[account] = acoinBalances[account].add(numACoins);
 		acoinTotalSupply = acoinTotalSupply.add(numACoins);
+        payable(owner).transfer(msg.value);
 		// payable(owner).transfer(numACoins);
-        emit buyACoinEvent(account, numACoins);
+        emit buyACoinEvent(account, numACoins, _caller, "buyACoin");
+    }
+
+    /// @dev Buying ACoin, transferring INR
+    function buyACoinINR(address account, uint numACoins, address payable _caller)
+		payable
+        public 
+    {
+        acoinBalances[account] = acoinBalances[account].add(numACoins);
+		acoinTotalSupply = acoinTotalSupply.add(numACoins);
+        // payable(owner).transfer(msg.value);
+		// payable(owner).transfer(numACoins);
+        emit buyACoinINREvent(account, numACoins, _caller, "buyACoinINR");
     }
 
 	/// @dev Withdrawing ETH from ACoin, transferring ETH to user from owner
-    function burnACoin(address account, uint numACoins)
+    function burnACoin(address payable account, uint numACoins, address payable _caller)
 		payable
         public 
-        onlyOwner
+        
     {
 		require(acoinBalances[account] >= numACoins);
         acoinBalances[account] = acoinBalances[account].sub(numACoins);
 		acoinTotalSupply = acoinTotalSupply.sub(numACoins);
+        payable(account).transfer(msg.value);
 		// payable(account).transfer(numACoins);
-        emit burnACoinEvent(account, numACoins);
+        emit burnACoinEvent(account, numACoins, _caller, "burnACoin");
+    }
+
+    /// @dev Withdrawing ETH from ACoin, transferring ETH to user from owner
+    function burnACoinINR(address payable account, uint numACoins, address payable _caller)
+		payable
+        public 
+        
+    {
+		require(acoinBalances[account] >= numACoins);
+        acoinBalances[account] = acoinBalances[account].sub(numACoins);
+		acoinTotalSupply = acoinTotalSupply.sub(numACoins);
+        // payable(account).transfer(msg.value);
+		// payable(account).transfer(numACoins);
+        emit burnACoinINREvent(account, numACoins, _caller, "burnACoinINR");
     }
 	
 	/// @dev Transferring ACoin from one user account to another
-    function transferACoin(address sender, address receiver, uint256 numACoins)
+    function transferACoin(address sender, address receiver, uint256 numACoins, address payable _caller)
         public
-        onlyOwner
         returns (bool)
     {
         require(numACoins <= acoinBalances[sender]);
         acoinBalances[sender] = acoinBalances[sender].sub(numACoins);
         acoinBalances[receiver] = acoinBalances[receiver].add(numACoins);
-        emit transferACoinEvent(sender, receiver, numACoins);
+        emit transferACoinEvent(sender, receiver, numACoins, _caller, "transferCoin");
         return true;
     }
 
@@ -147,26 +188,35 @@ contract DivisibleNFTs {
     // ------------------------------ View functions ------------------------------
 
     /// @dev The divisiblity amount of a token
-	function divisibilityOfAToken(string memory _tokenId) public returns (uint _divisibility)
+	function divisibilityOfAToken(string memory _tokenId) public view returns (uint _divisibility)
 	{
-		emit divisibilityEvent(divisibility[_tokenId], "divisibilityOfAToken - The divisiblity amount of a token");
+		// emit divisibilityEvent(divisibility[_tokenId], _caller, "divisibilityOfAToken - The divisiblity amount of a token");
 	    return divisibility[_tokenId];
 	}
 
+    function divisibilityOfTokens(string[] memory _tokenIds, address[] memory _ownerAddresses) public view returns (uint[] memory _divisiblities) {
+        uint[] memory divisiblities = new uint[](_tokenIds.length);
+        for(uint i = 0; i < _tokenIds.length; i++) {
+            divisiblities[i] = tokenToOwnersHoldings[_tokenIds[i]][_ownerAddresses[i]];
+        }
+
+        return divisiblities;
+    }
+
 	/// @dev The amount of a totalSupply
     // Earlier totalSupplyView()
-	function totalSupplyView() public returns (uint _totalSupply)
+	function totalSupplyView() public view returns (uint _totalSupply)
 	{
-		emit totalSupplyEvent(tokenTotalSupply, "totalSupplyView");
+		// emit totalSupplyEvent(tokenTotalSupply, _caller, "totalSupplyView");
 	    return tokenTotalSupply;
 	}
 
     /// @dev The balance an owner have of a token
     function unitsOwnedOfAToken(address _owner, string memory _tokenId)
-        public
+        public view
         returns (uint256 _balance)
     {
-		emit unitsOwnedOfATokenEvent(ownerToTokenShare[_owner][_tokenId], "unitsOwnedOfAToken");
+		// emit unitsOwnedOfATokenEvent(ownerToTokenShare[_owner][_tokenId], _caller, "unitsOwnedOfAToken");
         return ownerToTokenShare[_owner][_tokenId];
     }
 
@@ -177,7 +227,8 @@ contract DivisibleNFTs {
     function mint(
         address _owner,
         string memory _tokenId,
-        uint256 _noOfShares
+        uint256 _noOfShares,
+        address payable _caller
     ) public onlyNonExistentToken(_tokenId) {
 
         divisibility[_tokenId] = _noOfShares;
@@ -188,7 +239,7 @@ contract DivisibleNFTs {
         _addNewOwnerHoldingsToToken(_owner, _tokenId, divisibility[_tokenId]);
 
         tokenTotalSupply = tokenTotalSupply + 1;
-        emit mintEvent(_owner, _tokenId, _noOfShares, tokenTotalSupply,  "mint - Minting grants 100% of the token to a new owner");
+        emit mintEvent(_owner, _tokenId, _noOfShares, tokenTotalSupply, _caller, "mint - Minting grants 100% of the token to a new owner");
 
         //Minted(_owner, _tokenId); // emit event
     }
@@ -199,20 +250,63 @@ contract DivisibleNFTs {
         address _from,
         address _to,
         string memory _tokenId,
-        uint256 _units
-    ) public onlyExistentToken(_tokenId) {
+        uint256 _units,
+        uint256 _price
+    ) public {
         require(ownerToTokenShare[_from][_tokenId] >= _units);
         // TODO should check _to address to avoid losing tokens units
+
+        confirmedPrice[_from][_to][_tokenId][_units] = _price;
 
         _removeShareFromLastOwner(_from, _tokenId, _units);
         _removeLastOwnerHoldingsFromToken(_from, _tokenId, _units);
 
         _addShareToNewOwner(_to, _tokenId, _units);
         _addNewOwnerHoldingsToToken(_to, _tokenId, _units);
-        emit transferTokenEvent(_from,  _to,  _tokenId,  _units,  "transfer - transfer parts of a token to another user");
+        emit transferTokenEvent(_from,  _to,  _tokenId,  _units, "transfer - transfer parts of a token to another user");
 
         //Transfer(msg.sender, _to, _tokenId, _units); // emit event
     }
+
+    function transferNftShare(
+        address _from,
+        address _to,
+        string memory _tokenId,
+        uint256 _units,
+        uint256 _price,
+        uint256 _amount
+    ) public {
+        require(ownerToTokenShare[_from][_tokenId] >= _units);
+        require(_amount <= acoinBalances[_to]);
+
+        acoinBalances[_to] = acoinBalances[_to].sub(_amount);
+        acoinBalances[_from] = acoinBalances[_from].add(_amount);
+        // TODO should check _to address to avoid losing tokens units
+
+        confirmedPrice[_from][_to][_tokenId][_units] = _price;
+
+        _removeShareFromLastOwner(_from, _tokenId, _units);
+        _removeLastOwnerHoldingsFromToken(_from, _tokenId, _units);
+
+        _addShareToNewOwner(_to, _tokenId, _units);
+        _addNewOwnerHoldingsToToken(_to, _tokenId, _units);
+        emit transferNftShareEvent( _from, _to, _tokenId, _units, _amount, "transferNftShare");    
+        
+    }
+
+    function getPrice(
+        address _from,
+        address _to,
+        string memory _tokenId,
+        uint256 _units
+    ) public view onlyExistentToken(_tokenId) returns(uint) {
+        
+        return confirmedPrice[_from][_to][_tokenId][_units];
+        // emit transferTokenEvent(_from,  _to,  _tokenId,  _units, _caller, "transfer - transfer parts of a token to another user");
+
+        //Transfer(msg.sender, _to, _tokenId, _units); // emit event
+    }
+
 
     // ------------------------------ Helper functions (internal functions) ------------------------------
 
@@ -223,6 +317,8 @@ contract DivisibleNFTs {
         uint256 _units
     ) internal {
         ownerToTokenShare[_owner][_tokenId] -= _units;
+        emit removeShareEvent(_owner, _tokenId, _units, "_removeShareFromLastOwner - Remove token units from last owner");
+
     }
 
     // Add token units to new owner
@@ -232,6 +328,8 @@ contract DivisibleNFTs {
         uint256 _units
     ) internal {
         ownerToTokenShare[_owner][_tokenId] += _units;
+        emit addShareEvent(_owner, _tokenId, _units, "_addShareToNewOwner - Add token units to new owner");
+
     }
 
     // Remove units from last owner
@@ -241,6 +339,8 @@ contract DivisibleNFTs {
         uint256 _units
     ) internal {
         tokenToOwnersHoldings[_tokenId][_owner] -= _units;
+        emit removeOwnerHoldingsEvent(_owner, _tokenId, _units, "_removeLastOwnerHoldingsFromToken - Remove units from last owner");
+
     }
 
     // Add the units to new owner
@@ -250,6 +350,8 @@ contract DivisibleNFTs {
         uint256 _units
     ) internal {
         tokenToOwnersHoldings[_tokenId][_owner] += _units;
+        emit addOwnerHoldingsEvent(_owner, _tokenId, _units, "_addNewOwnerHoldingsToToken - Add the units to new owner");
+
     }
 }
 

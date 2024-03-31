@@ -17,7 +17,7 @@ export default function Navbar() {
       <header className="dark-bb">
         <nav className="navbar navbar-expand-lg">
           <Link className="navbar-brand" to="/">
-            Fungify
+            {process.env.REACT_APP_NAME}
           </Link>
           <button
             className="navbar-toggler"
@@ -33,18 +33,6 @@ export default function Navbar() {
 
           <div className="collapse navbar-collapse" id="headerMenu">
             <ul className="navbar-nav mr-auto">
-              {/* <li className="nav-item dropdown">
-                                <Link
-                                    className="nav-link"
-                                    to="/exchange"
-                                    role="button"
-                                    data-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false"
-                                >
-                                    Exchange
-                                </Link>
-                            </li> */}
               <li className="nav-item dropdown">
                 <Link
                   className="nav-link "

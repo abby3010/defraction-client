@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema(
       index: true,
       required: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     walletAddress: {
       type: String,
       required: true
@@ -24,7 +28,10 @@ const userSchema = new mongoose.Schema(
     wallet: {
       type: Number,
     },
-    transcation: {
+    transaction: {
+      type: Array,
+    },
+    trades:{
       type: Array,
     },
     role: {

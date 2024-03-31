@@ -1,3 +1,5 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 import React from "react";
@@ -5,293 +7,20 @@ import Chart from "react-apexcharts";
 import { onValue, ref } from "firebase/database";
 import { db } from "../config/Firebase";
 // eslint-disable-next-line no-unused-vars
-import { Chart as ChartJS } from "chart.js/auto";
+// import { Chart as ChartJS } from "chart.js/auto";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-var data = {
-  options: {
-    plotOptions: {
-      candlestick: {
-        wick: {
-          useFillColor: true,
-        },
-      },
-    },
+// import data from "./data";
 
-    chart: {
-      type: "candlestick",
-      height: 350,
-      color: "#ff0000",
-    },
+//[mini, open, close, maxi]
 
-    title: {
-      text: "CandleStick Chart",
-      align: "left",
-    },
-    xaxis: {
-      type: "datetime",
-      tickPlacement: "on",
-    },
-    yaxis: {
-      tooltip: {
-        enabled: true,
-      },
-    },
-  },
-  series: [
-    {
-      data: [
-        {
-          x: new Date(1538778600000),
-          y: [6629.81, 6650.5, 6623.04, 6633.33],
-        },
-        {
-          x: new Date(1538780400000),
-          y: [6632.01, 6643.59, 6620, 6630.11],
-        },
-        {
-          x: new Date(1538782200000),
-          y: [6630.71, 6648.95, 6623.34, 6635.65],
-        },
-        {
-          x: new Date(1538784000000),
-          y: [6635.65, 6651, 6629.67, 6638.24],
-        },
-        {
-          x: new Date(1538785800000),
-          y: [6638.24, 6640, 6620, 6624.47],
-        },
-        {
-          x: new Date(1538787600000),
-          y: [6624.53, 6636.03, 6621.68, 6624.31],
-        },
-        {
-          x: new Date(1538789400000),
-          y: [6624.61, 6632.2, 6617, 6626.02],
-        },
-        {
-          x: new Date(1538791200000),
-          y: [6627, 6627.62, 6584.22, 6603.02],
-        },
-        {
-          x: new Date(1538793000000),
-          y: [6605, 6608.03, 6598.95, 6604.01],
-        },
-        {
-          x: new Date(1538794800000),
-          y: [6604.5, 6614.4, 6602.26, 6608.02],
-        },
-        {
-          x: new Date(1538796600000),
-          y: [6608.02, 6610.68, 6601.99, 6608.91],
-        },
-        {
-          x: new Date(1538798400000),
-          y: [6608.91, 6618.99, 6608.01, 6612],
-        },
-        {
-          x: new Date(1538800200000),
-          y: [6612, 6615.13, 6605.09, 6612],
-        },
-        {
-          x: new Date(1538802000000),
-          y: [6612, 6624.12, 6608.43, 6622.95],
-        },
-        {
-          x: new Date(1538803800000),
-          y: [6623.91, 6623.91, 6615, 6615.67],
-        },
-        {
-          x: new Date(1538805600000),
-          y: [6618.69, 6618.74, 6610, 6610.4],
-        },
-        {
-          x: new Date(1538807400000),
-          y: [6611, 6622.78, 6610.4, 6614.9],
-        },
-        {
-          x: new Date(1538809200000),
-          y: [6614.9, 6626.2, 6613.33, 6623.45],
-        },
-        {
-          x: new Date(1538811000000),
-          y: [6623.48, 6627, 6618.38, 6620.35],
-        },
-        {
-          x: new Date(1538812800000),
-          y: [6619.43, 6620.35, 6610.05, 6615.53],
-        },
-        {
-          x: new Date(1538814600000),
-          y: [6615.53, 6617.93, 6610, 6615.19],
-        },
-        {
-          x: new Date(1538816400000),
-          y: [6615.19, 6621.6, 6608.2, 6620],
-        },
-        {
-          x: new Date(1538818200000),
-          y: [6619.54, 6625.17, 6614.15, 6620],
-        },
-        {
-          x: new Date(1538820000000),
-          y: [6620.33, 6634.15, 6617.24, 6624.61],
-        },
-        {
-          x: new Date(1538821800000),
-          y: [6625.95, 6626, 6611.66, 6617.58],
-        },
-        {
-          x: new Date(1538823600000),
-          y: [6619, 6625.97, 6595.27, 6598.86],
-        },
-        {
-          x: new Date(1538825400000),
-          y: [6598.86, 6598.88, 6570, 6587.16],
-        },
-        {
-          x: new Date(1538827200000),
-          y: [6588.86, 6600, 6580, 6593.4],
-        },
-        {
-          x: new Date(1538829000000),
-          y: [6593.99, 6598.89, 6585, 6587.81],
-        },
-        {
-          x: new Date(1538830800000),
-          y: [6587.81, 6592.73, 6567.14, 6578],
-        },
-        {
-          x: new Date(1538832600000),
-          y: [6578.35, 6581.72, 6567.39, 6579],
-        },
-        {
-          x: new Date(1538834400000),
-          y: [6579.38, 6580.92, 6566.77, 6575.96],
-        },
-        {
-          x: new Date(1538836200000),
-          y: [6575.96, 6589, 6571.77, 6588.92],
-        },
-        {
-          x: new Date(1538838000000),
-          y: [6588.92, 6594, 6577.55, 6589.22],
-        },
-        {
-          x: new Date(1538839800000),
-          y: [6589.3, 6598.89, 6589.1, 6596.08],
-        },
-        {
-          x: new Date(1538841600000),
-          y: [6597.5, 6600, 6588.39, 6596.25],
-        },
-        {
-          x: new Date(1538843400000),
-          y: [6598.03, 6600, 6588.73, 6595.97],
-        },
-        {
-          x: new Date(1538845200000),
-          y: [6595.97, 6602.01, 6588.17, 6602],
-        },
-        {
-          x: new Date(1538847000000),
-          y: [6602, 6607, 6596.51, 6599.95],
-        },
-        {
-          x: new Date(1538848800000),
-          y: [6600.63, 6601.21, 6590.39, 6591.02],
-        },
-        {
-          x: new Date(1538850600000),
-          y: [6591.02, 6603.08, 6591, 6591],
-        },
-        {
-          x: new Date(1538852400000),
-          y: [6591, 6601.32, 6585, 6592],
-        },
-        {
-          x: new Date(1538854200000),
-          y: [6593.13, 6596.01, 6590, 6593.34],
-        },
-        {
-          x: new Date(1538856000000),
-          y: [6593.34, 6604.76, 6582.63, 6593.86],
-        },
-        {
-          x: new Date(1538857800000),
-          y: [6593.86, 6604.28, 6586.57, 6600.01],
-        },
-        {
-          x: new Date(1538859600000),
-          y: [6601.81, 6603.21, 6592.78, 6596.25],
-        },
-        {
-          x: new Date(1538861400000),
-          y: [6596.25, 6604.2, 6590, 6602.99],
-        },
-        {
-          x: new Date(1538863200000),
-          y: [6602.99, 6606, 6584.99, 6587.81],
-        },
-        {
-          x: new Date(1538865000000),
-          y: [6587.81, 6595, 6583.27, 6591.96],
-        },
-        {
-          x: new Date(1538866800000),
-          y: [6591.97, 6596.07, 6585, 6588.39],
-        },
-        {
-          x: new Date(1538868600000),
-          y: [6587.6, 6598.21, 6587.6, 6594.27],
-        },
-        {
-          x: new Date(1538870400000),
-          y: [6596.44, 6601, 6590, 6596.55],
-        },
-        {
-          x: new Date(1538872200000),
-          y: [6598.91, 6605, 6596.61, 6600.02],
-        },
-        {
-          x: new Date(1538874000000),
-          y: [6600.55, 6605, 6589.14, 6593.01],
-        },
-        {
-          x: new Date(1538875800000),
-          y: [6593.15, 6605, 6592, 6603.06],
-        },
-        {
-          x: new Date(1538877600000),
-          y: [6603.07, 6604.5, 6599.09, 6603.89],
-        },
-        {
-          x: new Date(1538879400000),
-          y: [6604.44, 6604.44, 6600, 6603.5],
-        },
-        {
-          x: new Date(1538881200000),
-          y: [6603.5, 6603.99, 6597.5, 6603.86],
-        },
-        {
-          x: new Date(1538883000000),
-          y: [6603.85, 6605, 6600, 6604.07],
-        },
-        {
-          x: new Date(1538884800000),
-          y: [6604.98, 6606, 6604.07, 6606],
-        },
-      ],
-    },
-  ],
-  zoom: {
-    enabled: true,
-  },
-};
 export default function Exchange() {
   const { id } = useParams();
+  const [loading, setLoading] = React.useState(true);
+  const [prize, setPrize] = React.useState([]);
+  const [time, settime] = React.useState([]);
   const { user } = useSelector((state) => ({ ...state }));
   const [price, setprice] = React.useState({
     sellprice: [],
@@ -299,45 +28,276 @@ export default function Exchange() {
     buyshares: [],
     buyprice: [],
   });
-  console.log(price);
+  // console.log(price);
   const [textData, setTextData] = React.useState();
+  const [current, setcurrprice] = React.useState("");
+  var closed_price;
+  React.useEffect(() => {
+    const candlechat = async () => {
+      var time = [];
+      var price = [];
+      const query = ref(db, "allStocksCurrentPriceHistoryArray");
+      return onValue(query, (snapshot) => {
+        const raw_data = snapshot.val();
+
+        if (snapshot.exists()) {
+          // coo
+          console.log(raw_data[id]);
+          const data = Object.keys(Object.values(raw_data[id])).map(function (
+            item
+          ) {
+            return Object.values(raw_data[id])[item];
+          });
+          console.log(data);
+          let ans = {};
+          var start = data[0].time;
+          var end = data[data.length - 1].time;
+
+          var start_hour = parseInt(start.split(":")[0]);
+          var start_minute = parseInt(start.split(":")[1]);
+          var end_hour = end.split(":")[0];
+          var end_minute = end.split(":")[1];
+          console.log(start_hour, start_minute, end_minute, end_hour);
+          var dur_start = start_minute - (start_minute % 5);
+          var dur_end = parseInt(end_minute) + 25 - (end_minute % 5);
+          var dur_hour_end = parseInt(end_hour);
+          if (dur_end === 60) {
+            dur_end = 0;
+            dur_hour_end = dur_hour_end + 1;
+          }
+          console.log(dur_hour_end);
+          console.log(dur_start, dur_end);
+          var i = start_hour;
+          var j = dur_start;
+
+          var temp_min = data[0].price;
+          var temp_max = data[0].price;
+          var temp_close = data[0].price;
+          var temp_open = data[0].price;
+
+          var prev_temp_min = 0;
+          var prev_temp_max = 0;
+          var prev_temp_close = 0;
+          var prev_temp_open = 0;
+
+          let k = 0;
+          let h = k;
+          let newSection = false;
+
+          while (i <= dur_hour_end) {
+            let temp_start_minute = j;
+            let prev_temp_start_minute = j;
+            let temp_start_hour = i;
+
+            if (i == dur_hour_end && j == dur_end) {
+              if (dur_end == 0) break;
+              console.log(i + ":" + j);
+              time.push(i + ":" + j);
+              break;
+            } else if (j == 0) {
+              j = j + 5;
+              console.log(i + ":05");
+              time.push(i + ":05");
+            } else if (j == 60) {
+              i = parseInt(i) + 1;
+              j = 0;
+              console.log(i + ":00");
+              time.push(i + ":00");
+            } else if (j == 5) {
+              console.log(i + ":05");
+              // time.push(i + ":05");
+              j = j + 5;
+            } else {
+              console.log(i + ":" + j);
+              time.push(i + ":" + j);
+              j = j + 5;
+            }
+
+            let temp_end_minute;
+            let temp_end_hour;
+
+            if (j == 0) {
+              temp_end_minute = 59;
+              temp_end_hour = i - 1;
+            } else {
+              temp_end_minute = j;
+              temp_end_hour = i;
+            }
+
+            h = k;
+            while (
+              temp_start_minute <= temp_end_minute &&
+              temp_start_hour <= temp_end_hour
+            ) {
+              if (h == data.length) break;
+              let time_array = data[h].time.split(":");
+              let temp_minute = parseInt(time_array[1]);
+              if (temp_minute == prev_temp_start_minute) {
+                temp_start_minute = prev_temp_start_minute;
+              }
+              let temp_hour = parseInt(time_array[0]);
+
+              if (
+                (temp_hour == temp_start_hour &&
+                  temp_minute == temp_start_minute) ||
+                (temp_hour == temp_end_hour && temp_end_minute == temp_minute)
+              ) {
+                if (newSection) {
+                  temp_open = data[h].price;
+                  newSection = false;
+                }
+                temp_min = temp_min > data[h].price ? data[h].price : temp_min;
+                temp_max = temp_max > data[h].price ? temp_max : data[h].price;
+                temp_close = data[h].price;
+                h = h + 1;
+              }
+              prev_temp_start_minute = temp_start_minute;
+              temp_start_minute = temp_start_minute + 1;
+              if (temp_start_minute == 60) {
+                temp_start_minute = temp_end_minute;
+                temp_start_hour = temp_end_hour;
+              }
+            }
+
+            if (h == k) {
+              console.log({
+                OPEN: prev_temp_open,
+                MIN: prev_temp_min,
+                MAX: prev_temp_max,
+                CLOSE: prev_temp_close,
+              });
+              price.push([temp_open, temp_max, temp_min, temp_close]);
+            } else if (h > k) {
+              k = h;
+              console.log({
+                OPEN: temp_open,
+                MIN: temp_min,
+                MAX: temp_max,
+                CLOSE: temp_close,
+              });
+              price.push([temp_open, temp_max, temp_min, temp_close]);
+              prev_temp_open = temp_open;
+              prev_temp_close = temp_close;
+              prev_temp_min = temp_min;
+              prev_temp_max = temp_max;
+
+              temp_open = 0;
+              temp_close = 0;
+              temp_min = 67383736474;
+              temp_max = 0;
+              newSection = true;
+            }
+          }
+          for (var x = 0; x < price.length; x++) {
+            if (price[x][0] == 0) {
+              price[x][0] = price[x - 1][0];
+              price[x][1] = price[x - 1][1];
+              price[x][2] = price[x - 1][2];
+              price[x][3] = price[x - 1][3];
+            }
+          }
+          setPrize(price);
+
+          settime(time);
+          closed_price = price[price.length - 1];
+        }
+      });
+    };
+    candlechat().then(function (res) {
+      setLoading(false);
+    });
+  }, []);
+
+  let graph_data = {
+    options: {
+      plotOptions: {
+        candlestick: {
+          wick: {
+            useFillColor: true,
+          },
+        },
+      },
+
+      chart: {
+        type: "candlestick",
+        height: 350,
+        color: "#ff0000",
+      },
+
+      title: {
+        text: "CandleStick Chart",
+        align: "left",
+      },
+      xaxis: {
+        type: "category",
+        tickPlacement: "on",
+      },
+      yaxis: {
+        tooltip: {
+          enabled: true,
+        },
+      },
+    },
+    series: [
+      {
+        data: time.map((item, index) => {
+          return {
+            x: item,
+            y:
+              prize.length == 0
+                ? [10, 10, 10, 10]
+                : prize.length > 3 && prize[index][2] != 67383736474
+                ? prize[index] ?? [current, current, current, current]
+                : console.log(),
+          };
+        }),
+      },
+    ],
+    zoom: {
+      enabled: true,
+    },
+  };
 
   React.useEffect(() => {
     const query = ref(db, id);
     return onValue(query, (snapshot) => {
       const data = snapshot.val();
-
       if (snapshot.exists()) {
+        console.log(data);
+        setcurrprice(data.currentPrice);
         var value = [];
         var sellvalue = [];
         var innerdata = [];
         var innerselldata = [];
-        Object.keys(data.sellOrders).forEach(function (key, index) {
-          sellvalue.push(key);
-          innerselldata.push(data.sellOrders[key]);
-        });
+        if (data.sellOrders) {
+          Object.keys(data.sellOrders).forEach(function (key, index) {
+            sellvalue.push(key);
+            innerselldata.push(data.sellOrders[key]);
+          });
+        }
         // setprice({ ...price, sellshares: sellvalue });
-        Object.keys(data.buyOrders).forEach(function (key, index) {
-          value.push(key);
-          innerdata.push(data.buyOrders[key]);
-        });
-
+        if (data.buyOrders) {
+          Object.keys(data.buyOrders).forEach(function (key, index) {
+            value.push(key);
+            innerdata.push(data.buyOrders[key]);
+          });
+        }
         var total = 0;
         var t = [];
         var selltotal = 0;
         var s = [];
         innerdata.map((item) => {
-          total=0;
+          total = 0;
           Object.values(item).forEach(function (key, index) {
-            total += key.price;
+            total += key.quantity;
           });
           t.push(total);
         });
         // setprice({ ...price, buyprice: total });
         innerselldata.map((item) => {
-          selltotal=0;
+          selltotal = 0;
           Object.values(item).forEach(function (key, index) {
-            selltotal += key.price;
+            selltotal += key.quantity;
           });
           s.push(selltotal);
         });
@@ -349,6 +309,7 @@ export default function Exchange() {
           sellprice: s,
           sellshares: sellvalue,
         });
+
         // setprice(data);
       }
     });
@@ -356,190 +317,271 @@ export default function Exchange() {
 
   const handleChange = (event) => {
     setTextData({ ...textData, [event.target.name]: event.target.value });
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // console.log(user)
-      console.log(textData.price)
-      let result = await axios.post('https://smact.vercel.app/api/placeSellOrder' ,{
-        "price": parseInt(textData.price),
-        "quantity": parseInt(textData.quantity),
-        "ticker_symbol": id,
-        "order_type": "market",
-        "buyerId": user.user.walletAddress
-      });
-
-      console.log(result.amount);
-      console.log()
-      console.log(result)
-      toast.success(result.data.message);
-      
+      console.log(textData.price);
+      let result = await axios
+        .post(process.env.REACT_APP_API + "/api/placeSellOrder", {
+          price: parseInt(textData.price),
+          quantity: parseInt(textData.quantity),
+          ticker_symbol: id,
+          order_type: "market",
+          buyerId: user.user.walletAddress,
+        })
+        .then(async () => {
+          let re = await axios
+            .post(process.env.REACT_APP_API + "/api/trade/add-trade", {
+              price: parseInt(textData.price),
+              quantity: parseInt(textData.quantity),
+              ticker_symbol: id,
+              order_type: "Sell",
+              email: user.user.email,
+              buyerId: user.user.walletAddress,
+            })
+            .then(() => {
+              toast.success("Successfully Sell Share");
+            });
+        });
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const handleBuySubmit = async (e) => {
     e.preventDefault();
     try {
-      // console.log(textData.quantity)
-      // console.log(textData.price)
-      let result = await axios.post('https://smact.vercel.app/api/placeBuyOrder' ,{
-        "price": parseInt(textData.price),
-        "quantity": parseInt(textData.quantity),
-        "ticker_symbol": id,
-        "order_type": "market",
-        "buyerId": user.user.walletAddress
-      });
-      console.log(result)
-      toast.success(result.data.message);
-    }
-    catch (error) {
+      let result = await axios
+        .post(process.env.REACT_APP_API + "/api/placeBuyOrder", {
+          price: parseInt(textData.price),
+          quantity: parseInt(textData.quantity),
+          ticker_symbol: id,
+          order_type: "market",
+          buyerId: user.user.walletAddress,
+        })
+        .then(async () => {
+          let re = await axios
+            .post(process.env.REACT_APP_API + "/api/trade/add-trade", {
+              price: parseInt(textData.price),
+              quantity: parseInt(textData.quantity),
+              ticker_symbol: id,
+              order_type: "Buy",
+              email: user.user.email,
+              buyerId: user.user.walletAddress,
+            })
+            .then(() => {
+              toast.success("Successfully Buy Share");
+            });
+        });
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
   return (
     <>
-      {console.log(price)}
-      <div className="container-fluid mtb15 no-fluid">
-        <div style={{ gap: "10px" }} className="row sm-gutters">
-          <div className="col-md-8">
-            <div className="market-trade-history" style={{ width: "100%" }}>
-              <h2 className="heading">Trade History</h2>
-              <Chart
-                options={data.options}
-                series={data.series}
-                type="candlestick"
-                width="100%"
-              />
-            </div>
-            <div className="market-trade">
-              <ul className="nav nav-pills" role="tablist">
-                <li className="nav-item">
-                  <a
-                    className="nav-link active"
-                    data-toggle="pill"
-                    href="#pills-trade-limit"
-                    role="tab"
-                    aria-selected="true"
-                  >
-                    Limit
-                  </a>
-                </li>
-              </ul>
-              <div className="tab-content">
+      {console.log("this is prize" + prize.length, time.length)}
+      {console.log("this is prize" + prize)}
+      {console.log("this is prize" + time)}
+
+      {!loading ? (
+        <div className="container-fluid mtb15 no-fluid">
+          <div style={{ gap: "10px" }} className="row sm-gutters">
+            <div className="col-md-8">
+              <div className="market-trade-history" style={{ width: "100%" }}>
                 <div
-                  className="tab-pane fade show active"
-                  id="pills-trade-limit"
-                  role="tabpanel"
+                  className="row"
+                  style={{ justifyContent: "space-between", marginLeft: "5px" }}
                 >
-                  <div className="d-flex justify-content-between">
-                    <div className="market-trade-buy">
-                      <div className="input-group">
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="Price"
-                          name="price"
-                          onChange={(event) => handleChange(event)}
-                        />
-                        <div className="input-group-append">
-                          <span className="input-group-text">AC</span>
+                  <h2
+                    style={{
+                      fontSize: "25px",
+                      letterSpacing: "1px",
+                      fontWeight: "600",
+                    }}
+                    className="heading"
+                  >
+                    {id}
+                  </h2>
+                  <h2
+                    style={{
+                      fontSize: "25px",
+                      letterSpacing: "1px",
+                      fontWeight: "600",
+                    }}
+                    className="heading"
+                  >
+                    Current Price: {current}
+                  </h2>
+                </div>
+
+                <Chart
+                  options={graph_data.options}
+                  series={graph_data.series}
+                  type="candlestick"
+                  width="100%"
+                />
+              </div>
+              <div className="market-trade">
+                <ul className="nav nav-pills" role="tablist">
+                  <li className="nav-item">
+                    <a
+                      className="nav-link active"
+                      data-toggle="pill"
+                      href="#pills-trade-limit"
+                      role="tab"
+                      aria-selected="true"
+                    >
+                      Limit
+                    </a>
+                  </li>
+                </ul>
+                <div className="tab-content">
+                  <div
+                    className="tab-pane fade show active"
+                    id="pills-trade-limit"
+                    role="tabpanel"
+                  >
+                    <div className="d-flex justify-content-between">
+                      <div className="market-trade-buy">
+                        <div className="input-group">
+                          <input
+                            type="number"
+                            className="form-control"
+                            placeholder="Price"
+                            name="price"
+                            onChange={(event) => handleChange(event)}
+                          />
+                          <div className="input-group-append">
+                            <span className="input-group-text">AC</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="input-group">
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="Amount"
-                          name="quantity"
-                          onChange={(event) => handleChange(event)}
-                        />
-                        <div className="input-group-append">
-                          <span className="input-group-text">SHARES</span>
+                        <div className="input-group">
+                          <input
+                            type="number"
+                            className="form-control"
+                            placeholder="Amount"
+                            name="quantity"
+                            onChange={(event) => handleChange(event)}
+                          />
+                          <div className="input-group-append">
+                            <span className="input-group-text">SHARES</span>
+                          </div>
                         </div>
+                        <button onClick={handleBuySubmit} className="btn buy">
+                          Buy
+                        </button>
                       </div>
-                      <button onClick={handleBuySubmit} className="btn buy">Buy</button>
-                    </div>
-                    <div className="market-trade-sell">
-                      <div className="input-group">
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="Price"
-                          name="price"
-                          onChange={(event) => handleChange(event)}
-                        />
-                        <div className="input-group-append">
-                          <span className="input-group-text">AC</span>
+                      <div className="market-trade-sell">
+                        <div className="input-group">
+                          <input
+                            type="number"
+                            className="form-control"
+                            placeholder="Price"
+                            name="price"
+                            onChange={(event) => handleChange(event)}
+                          />
+                          <div className="input-group-append">
+                            <span className="input-group-text">AC</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="input-group">
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="Amount"
-                          name="quantity"
-                          onChange={(event) => handleChange(event)}
-                        />
-                        <div className="input-group-append">
-                          <span className="input-group-text">SHARES</span>
+                        <div className="input-group">
+                          <input
+                            type="number"
+                            className="form-control"
+                            placeholder="Amount"
+                            name="quantity"
+                            onChange={(event) => handleChange(event)}
+                          />
+                          <div className="input-group-append">
+                            <span className="input-group-text">SHARES</span>
+                          </div>
                         </div>
+                        <button
+                          onClick={(e) => handleSubmit(e)}
+                          className="btn sell"
+                        >
+                          Sell
+                        </button>
                       </div>
-                      <button onClick={(e) => handleSubmit(e)} className="btn sell">Sell</button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="col-md-3">
-            <div className="order-book mb15">
-              <h2 className="heading">Order Book</h2>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Price(AC)</th>
-                    <th>Shares</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(price.buyprice).map((value, index) => (
-                    <tr className="red-bg" key={index}>
-                      <td>{price.buyshares[index]}</td>
-                      <td>{price.buyprice[index]}</td>
+            <div className="col-md-3">
+              <div className="order-book mb15">
+                <h2 className="heading">Order Book</h2>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Price(AC)</th>
+                      <th>Shares</th>
                     </tr>
-                  ))}
-                </tbody>
-                <tbody className="ob-heading">
+                  </thead>
+                  <tbody>
+                    {price.buyprice.map((value, index) => (
+                      <tr className="red-bg" key={index}>
+                        <td>{price.sellshares[index]}</td>
+                        <td>{price.sellprice[index]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+
                   <tr>
                     <td>
-                      <span>Last Price</span>
+                      <span style={{ color: "white" }}>Current Price</span>
                     </td>
                     <td>
-                      <span>USD</span>
+                      <span style={{ color: "white", fontSize: "15px" }}>
+                        {current}
+                      </span>
                     </td>
-                    <td className="red">
-                      <span>Change</span>
-                    </td>
+                    {/* <td className="red">
+                    <span>Change</span>
+                  </td> */}
                   </tr>
-                </tbody>
-                <tbody>
-                  {(price.sellprice).map((value, index) => (
-                    <tr className="green-bg" key={index}>
-                      <td>{price.sellprice[index]}</td>
-                      <td>{price.sellshares[index]}</td>
+
+                  <tbody className="ob-heading">
+                    <tr>
+                      <td>
+                        <span>Last Price</span>
+                      </td>
+                      <td>
+                        <span>USD</span>
+                      </td>
+                      <td className="red">
+                        <span>Change</span>
+                      </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </tbody>
+                  <thead>
+                    <tr>
+                      <th>Price(AC)</th>
+                      <th>Shares</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {price.sellprice.map((value, index) => (
+                      <tr className="green-bg" key={index}>
+                        <td>{price.buyshares[index]}</td>
+                        <td>{price.buyprice[index]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <center>
+          <h1>Loading...</h1>
+        </center>
+      )}
     </>
   );
 }

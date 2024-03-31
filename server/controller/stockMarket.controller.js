@@ -1,50 +1,47 @@
-// const { placeBuyOrderForNFTShare, placeSellOrderForNFTShare, getCurrentPriceOfNFTShare } = require('../services/stockMarket.service')
+const { dynamicBuyOrderModel } = require("../model/stock.model");
+const stockMarketService = require("../services/stockMarket");
+const User = require("../model/user.model");
 
-// const stockMarketService = require("../services/stockMarket");
-
-const stockMarketService = new StockMarketService();
-
-function placeBuyOrderForNFTShare(req, res) {
-    const { nftId, shares, price } = req.body;
-    const { userId } = req.user;
+async function placeBuyOrderForNFTShare(req, res) {
+    const { nftId, shares, price, userAddress } = req.body;
+    console.log(req.body);
     if (!nftId || !shares || !price) {
         return res.status(400).json({
             error: "Invalid Data",
         });
     }
-    stockMarketService.placeBuyOrderForNFTShare(nftId, shares, price, userId, (err, data) => {
-        if (err) {
-            return res.status(400).json({
-                error: err,
-            });
-        }
-        return res.status(200).json({
-            message: "Buy Order Placed Successfully",
-            success: true,
-            data: data,
-        });
+
+    // TODO: Check if the user has enough balance to buy the shares
+    // let userBalance = await checkUserBalance(userId, price);
+    // if (userBalance < price) {           // ---> assuming that this condition is false
+    //     return callback("Insufficient Balance");
+    // }
+    // var data = await dynamicBuyOrderModel(nftId).create({
+    //     quantity: shares, price, userId: userAddress
+    // });
+
+    var result = await stockMarketService.checkAndExecuteBuyOrderIfAnySellOrderExists(nftId, shares, price, userAddress);
+
+    // TODO: Deduct the user balance
+    // TODO: Add the shares to the user's wallet
+    // TODO: Invoke Blockchain code to transfer the shares to the user's wallet
+
+    return res.status(200).json({
+        result: result,
     });
 }
 
-function placeSellOrderForNFTShare(req, res) {
-    const { nftId, shares, price } = req.body;
-    const { userId } = req.user;
+async function placeSellOrderForNFTShare(req, res) {
+    const { nftId, shares, price, userAddress } = req.body;
     if (!nftId || !shares || !price) {
         return res.status(400).json({
             error: "Invalid Data",
         });
     }
-    stockMarketService.placeSellOrderForNFTShare(nftId, shares, price, userId, (err, data) => {
-        if (err) {
-            return res.status(400).json({
-                error: err,
-            });
-        }
-        return res.status(200).json({
-            message: "Sell Order Placed Successfully",
-            success: true,
-            data: data,
-        });
+    var result = await stockMarketService.checkAndExecuteSellOrderIfAnyBuyOrderExists(nftId, shares, price, userAddress);
+
+    return res.status(200).json({
+        result: result,
     });
 }
 
@@ -69,5 +66,32 @@ function getCurrentPriceOfNFTShare(req, res) {
     });
 }
 
+const saveShareExchangeHistoryToUserDoc = async (req, res) => {
+    const { ticker_symbol, quantity, price, buyerId, order_type, email } = req.body;
 
-export default { placeBuyOrderForNFTShare, placeSellOrderForNFTShare, getCurrentPriceOfNFTShare }
+    let exchangeData = {
+        ticker_symbol,
+        quantity,
+        price,
+        buyerId,
+        order_type
+    };
+
+    let result =
+        await User.findOneAndUpdate({
+            email: email
+        }, {
+            $push: {
+                trades: {
+                    exchangeData
+                }
+            }
+        });
+
+    return res.status(200).json({
+        result: result,
+    })
+}
+
+
+module.exports = { saveShareExchangeHistoryToUserDoc, placeBuyOrderForNFTShare, placeSellOrderForNFTShare, getCurrentPriceOfNFTShare }

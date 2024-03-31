@@ -29,6 +29,7 @@ exports.registerController = (req, res) => {
       const user = new User({
         name,
         email,
+        hashed_password,
         walletAddress,
         balance: parseInt(balance) / 1000000000000000000,
         password: hashed_password,
@@ -68,7 +69,7 @@ exports.loginController = (req, res) => {
 
   if (!errors.isEmpty()) {
     const firstError = errors.array().map((error) => error.msg)[0];
-    return res.status(400).json({
+    return res.status(401).json({
       error: firstError,
     });
   } else {
@@ -83,31 +84,37 @@ exports.loginController = (req, res) => {
 
       bcrypt.compare(password, user.password, function (err, result) {
         if (err) {
-          return res.status(400).json({
+          return res.status(401).json({
             error: "Invalid Password",
           });
         }
-      });
+        console.log(user);
+        if (result) {
+          const token = jwt.sign(
+            {
+              _id: user._id,
+            },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: "7d",
+            }
+          );
 
-      const token = jwt.sign(
-        {
-          _id: user._id,
-        },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "7d",
+          const { _id, name, email } = user;
+          res.cookie("jwt", token);
+          return res.json({
+            token,
+            user: {
+              _id,
+              name,
+              email,
+            },
+          });
+        } else {
+          res.status(401).json({
+            error: "Invalid Password",
+          });
         }
-      );
-
-      const { _id, name, email } = user;
-      res.cookie("jwt", token);
-      return res.json({
-        token,
-        user: {
-          _id,
-          name,
-          email,
-        },
       });
     });
   }
