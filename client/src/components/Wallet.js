@@ -15,12 +15,14 @@ export default function Wallet() {
         const accounts = await window.ethereum.request({
             method: "eth_requestAccounts",
         });
+        // console.log('im printing');
+        // console.log(window.web3.currentProvider);
         if (accounts.length > 0) {
             const balance = await window.ethereum.request({
                 method: "eth_getBalance",
-                params: [accounts[0], "latest"],
+                params: [accounts[1], "latest"],
             });
-            dispatch({ type: "connect", wallet: accounts[0], balance });
+            dispatch({ type: "connect", wallet: accounts[1], balance });
             // we can register an event listener for changes to the users wallet
             listen();
         }

@@ -11,7 +11,6 @@ import { Provider } from 'react-redux';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const store = configureStore({ reducer: rootReducer });
 root.render(
-  <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
         <MetamaskProvider>
@@ -19,6 +18,5 @@ root.render(
         </MetamaskProvider>
       </BrowserRouter>
     </Provider>
-  </React.StrictMode>
 );
 

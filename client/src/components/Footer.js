@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="row">
         <div className="col-md-2">
           <Link to="/" className='text-white'>
-            FungTrix
+          Fungify
           </Link>
         </div>
         <div className="col-md-10 d-flex justify-content-end align-items-center">
